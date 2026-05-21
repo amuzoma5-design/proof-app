@@ -23,7 +23,7 @@ const styles = `
     --grey-5: #E5E7EB; --grey-6: #F3F4F6; --grey-7: #F9FAFB; --white: #FFFFFF;
     --radius: 16px; --radius-sm: 10px; --shadow: 0 2px 16px rgba(0,0,0,0.07); --nav-h: 68px;
   }
-  html, body { height: 100%; overflow: hidden; }
+ html, body { height: 100%; overflow: hidden; padding-bottom: env(safe-area-inset-bottom); }
   body { font-family: 'DM Sans', sans-serif; background: var(--grey-7); color: var(--black); -webkit-font-smoothing: antialiased; }
   #root { height: 100%; display: flex; justify-content: center; background: #E9EDF2; }
   .app-shell { width: 100%; max-width: 430px; height: 100%; background: var(--white); display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 60px rgba(0,0,0,0.12); }
@@ -80,7 +80,7 @@ function NavBar({ active, setActive }) {
     { id: "profile", label: "Profile", icon: <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
   ];
   return (
-    <div style={{ height: 66, background: "white", borderTop: "1px solid #E5E7EB", display: "flex", alignItems: "center", padding: "0 6px", flexShrink: 0 }}>
+    <div style={{ height: 66, background: "white", borderTop: "1px solid #E5E7EB", display: "flex", alignItems: "center", padding: "0 6px", flexShrink: 0, paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}>
       {items.slice(0, 2).map(i => (
         <button key={i.id} onClick={() => setActive(i.id)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "6px 0", color: active === i.id ? "#065F46" : "#9CA3AF" }}>
           {i.icon}<span style={{ fontSize: 10, fontWeight: 600 }}>{i.label}</span>
