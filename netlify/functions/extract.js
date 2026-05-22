@@ -9,18 +9,16 @@ exports.handler = async (event) => {
     const { imageData, mediaType } = JSON.parse(event.body);
 
     const payload = JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 500,
-      messages: [{
-        role: "user",
-        content: [
+      contents: [{
+        parts: [
           {
-            type: "image",
-            source: { type: "base64", media_type: mediaType, data: imageData }
+            inline_data: {
+              mime_type: mediaType,
+              data: imageData
+            }
           },
           {
-            type: "text",
-            text: 'Extract transaction data from this Nigerian payment receipt. Return ONLY valid JSON: {"amount":"number only","sender_name":"string","bank_name":"string","transaction_date":"YYYY-MM-DD","narration":"string","confidence":"high/medium/low"}'
+            text: 'Extract transaction data from this Nigerian payment receipt. Return ONLY valid JSON with no extra text: {"amount":"number only e.g. 25000","sender_name":"name of sender","bank_name":"bank or payment platform name","transaction_date":"YYYY-MM-DD","narration":"what the payment is for","confidence":"high/medium/low"}'
           }
         ]
       }]
@@ -28,13 +26,11 @@ exports.handler = async (event) => {
 
     const result = await new Promise((resolve, reject) => {
       const req = https.request({
-        hostname: "api.anthropic.com",
-        path: "/v1/messages",
+        hostname: "generativelanguage.googleapis.com",
+        path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": process.env.ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01",
           "Content-Length": Buffer.byteLength(payload)
         }
       }, (res) => {
@@ -47,7 +43,7 @@ exports.handler = async (event) => {
       req.end();
     });
 
-    const text = result.content?.[0]?.text || "";
+    const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
     const clean = text.replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(clean);
 
