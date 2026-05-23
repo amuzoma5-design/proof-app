@@ -1,6 +1,6 @@
-const https = require("https");
+import https from "https";
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
     });
 
     const result = await new Promise((resolve, reject) => {
-      const req2 = https.request({
+      const request = https.request({
         hostname: "generativelanguage.googleapis.com",
         path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
         method: "POST",
@@ -31,9 +31,9 @@ module.exports = async (req, res) => {
         response.on("data", chunk => data += chunk);
         response.on("end", () => resolve(JSON.parse(data)));
       });
-      req2.on("error", reject);
-      req2.write(payload);
-      req2.end();
+      request.on("error", reject);
+      request.write(payload);
+      request.end();
     });
 
     const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
@@ -44,4 +44,4 @@ module.exports = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-};
+}
