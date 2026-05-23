@@ -1,3 +1,4 @@
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 import https from "https";
 
 export default async function handler(req, res) {
@@ -20,7 +21,7 @@ export default async function handler(req, res) {
     const result = await new Promise((resolve, reject) => {
       const request = https.request({
         hostname: "generativelanguage.googleapis.com",
-        path: `/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        path: `/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
