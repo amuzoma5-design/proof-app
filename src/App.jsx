@@ -199,7 +199,7 @@ export default function App() {
     setAiLoading(true);
     try {
       const b64 = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = e2 => res(e2.target.result.split(",")[1]); fr.onerror = rej; fr.readAsDataURL(f); });
-      const resp = await fetch("/.netlify/functions/extract", {
+      const resp = await fetch("/api/extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageData: b64, mediaType: f.type })
